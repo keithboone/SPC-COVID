@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>SPC for COVID-10</title>
+  <link rel="stylesheet" href="spc.css" type="text/css"></link>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="spc.js" type="text/javascript"></script>
+</head>
+<body>
+    <div id="metaContainer">
+      <div id="leftContainer">
+        <div class="leftItem title">
+          COVID-19 Statistical Process Control Charts
+        </div>
+        <div class="leftItem">
+            Data comes from <a href="https://covidtracking.com">covidtracking.com</a> using the <a href="https://covidtracking.com/api/">API.</a><br/>
+            See the <a href="about.html">about</a> page for credits.
+        </div>
+        <div class="leftItem" id="myLabel">
+          US COVID-19 1/(1 - New/Total)
+        </div>
+        <div class="leftItem">
+          Click on a data point to exclude it from statistical analysis.
+          Click anywhere in the chart to create a manual process break, or click below to automatically detect them.
+          Disable manual process breaks by clicking on the circle at the top of the break.
+        </div>
+        <div class="leftItem">
+          <input class="button" type="button" onclick="toggleAutoDetect()" value="Toggle Process Break Detection">
+        </div>
+      </div>
+      <div id="spcLegend"></div>
+    </div>
+  <div id="spcContainer">
+    <h2>Hospitalized Patients</h2>
+    <div id="hospContainer"></div>
+
+    <h2>Deaths</h2>
+    <div id="diedContainer"></div>
+
+    <h2>Testing Detail</h2>
+    <h3>Positive Tests (Patients with COVID-19)</h3>
+    <div id="posContainer"></div>
+
+    <h3>Negative Tests</h3>
+    <div id="negContainer"></div>
+
+    <h3>Total Results</h3>
+    <div id="bothContainer"></div>
+
+    <h3>Pending Tests</h3>
+    <div id="pendContainer"></div>
+
+    <h3>Total Tests</h3>
+    <div id="totContainer"></div>
+  </div>
+
+  <script type="text/javascript">
+  function loadData(myData, label) {
+    var pos = [], neg = [], both = [], pend = [], hosp = [], died = [], tot = [];
+
+    d3.csv(myData, function(error, d) {
+
+        if (error) throw error;
+
+        data = d;
+        data.forEach(function(d) {
+          r = new Object();
+          r.Date = spc.parseTime("%Y%m%d")(d.date);
+          r.pos = 1.0 / (1.0 - (+d.positiveIncrease / +d.positive));
+          r.neg = 1.0 / (1.0 - (+d.negativeIncrease / +d.negative));
+          r.both = 1.0 / (1.0 - ((+d.positiveIncrease + +d.negativeIncrease) / +d.posNeg));
+          r.pend = 1.0 / (1.0 - ((+d.totalTestResultsIncrease - +d.positiveIncrease + +d.negativeIncrease) / +d.pending));
+          r.hosp = 1.0 / (1.0 - (+d.hospitalizedIncrease / +d.hospitalized));
+          r.died = 1.0 / (1.0 - (+d.deathIncrease / +d.death));
+          r.tot = 1.0 / (1.0 - (+d.totalTestResultsIncrease / +d.total));
+          if (!isNaN(r.pos) && isFinite(r.pos)) { pos.push(r); }
+          if (!isNaN(r.neg) && isFinite(r.neg)) { neg.push(r); }
+          if (!isNaN(r.both) && isFinite(r.both)) { both.push(r); }
+          if (!isNaN(r.pend) && isFinite(r.pend)) { pend.push(r); }
+          if (!isNaN(r.hosp) && isFinite(r.hosp)) { hosp.push(r); }
+          if (!isNaN(r.died) && isFinite(r.died)) { died.push(r); }
+          if (!isNaN(r.tot) && isFinite(r.tot)) { tot.push(r); }
+        });
+        spc.displayChart(pos, "#posContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "pos"});
+        spc.displayChart(neg, "#negContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "neg"});
+        spc.displayChart(both, "#bothContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "both"});
+        spc.displayChart(pend, "#pendContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "pend"});
+        spc.displayChart(hosp, "#hospContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "hosp"});
+        spc.displayChart(died, "#diedContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "died"});
+        spc.displayChart(tot, "#totContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "tot"});
+      });
+  }
+
+  var dataFile = "https://covidtracking.com/api/us/daily.csv";
+  var label = "US COVID-19 1/(1 - New Cases/Cases)"
+  var properties;
+  var autoDetectProcesses = false;
+  var data
+
+  window.onload = function() {
+	  loadData(dataFile, label);
+      spc.drawLegend("#spcLegend");
+  }
+
+  toggleAutoDetect = function () {
+    properties.autoDetectProcess = !properties.autoDetectProcess;
+    spc.displayChart(pos, "#posContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "pos"});
+    spc.displayChart(neg, "#negContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "neg"});
+    spc.displayChart(both, "#bothContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "both"});
+    spc.displayChart(pend, "#pendContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "pend"});
+    spc.displayChart(hosp, "#hospContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "hosp"});
+    spc.displayChart(died, "#diedContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "died"});
+    spc.displayChart(tot, "#totContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "tot"});
+  }
+
+  window.onresize = function() {
+      spc.displayChart("#posContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "pos"});
+      spc.displayChart("#negContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "neg"});
+      spc.displayChart("#bothContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "both"});
+      spc.displayChart("#pendContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "pend"});
+      spc.displayChart("#hospContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "hosp"});
+      spc.displayChart("#diedContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "died"});
+      spc.displayChart("#totContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "tot"});
+  }
+  </script>
+</body>
+</html>
