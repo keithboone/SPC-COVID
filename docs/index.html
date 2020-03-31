@@ -114,7 +114,7 @@
   }
 
   toggleAutoDetect = function () {
-    properties.autoDetectProcess = !properties.autoDetectProcess;
+    autoDetectProcess = !autoDetectProcess;
     spc.displayChart(pos, "#posContainer", posProperties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "pos"});
     spc.displayChart(pos, "#caseContainer", posProperties);
     spc.displayChart(neg, "#negContainer", negProperties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "neg"});
