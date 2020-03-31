@@ -104,7 +104,7 @@
 
   var dataFile = "https://covidtracking.com/api/us/daily.csv";
   var label = "US COVID-19 1/(1 - New Cases/Cases)"
-  var posProperties, negProperties, ratioProperaties, bothProperties, pendProperties, hospProperties, diedProperties, totProperties;
+  var properties, posProperties, negProperties, ratioProperaties, bothProperties, pendProperties, hospProperties, diedProperties, totProperties;
   var autoDetectProcesses = false;
   var data
 
@@ -114,7 +114,7 @@
   }
 
   toggleAutoDetect = function () {
-    autoDetectProcess = !autoDetectProcess;
+	properties.autoDetectProcess = !properties.autoDetectProcess;
     spc.displayChart(pos, "#posContainer", posProperties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "pos"});
     spc.displayChart(pos, "#caseContainer", posProperties);
     spc.displayChart(neg, "#negContainer", negProperties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "neg"});
