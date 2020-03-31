@@ -75,7 +75,7 @@
           r.Date = spc.parseTime("%Y%m%d")(d.date);
           r.pos = 1.0 / (1.0 - (+d.positiveIncrease / +d.positive));
           r.neg = 1.0 / (1.0 - (+d.negativeIncrease / +d.negative));
-          r.ratio = +d.positiveIncreate / +d.negativeIncrease;
+          r.ratio = +d.positiveIncrease / +d.negativeIncrease;
           r.both = 1.0 / (1.0 - ((+d.positiveIncrease + +d.negativeIncrease) / +d.posNeg));
           r.pend = 1.0 / (1.0 - ((+d.totalTestResultsIncrease - +d.positiveIncrease + +d.negativeIncrease) / +d.pending));
           r.hosp = 1.0 / (1.0 - (+d.hospitalizedIncrease / +d.hospitalized));
