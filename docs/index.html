@@ -74,13 +74,13 @@
           r.hosp = 1.0 / (1.0 - (+d.hospitalizedIncrease / +d.hospitalized));
           r.died = 1.0 / (1.0 - (+d.deathIncrease / +d.death));
           r.tot = 1.0 / (1.0 - (+d.totalTestResultsIncrease / +d.total));
-          if (!isNaN(r.pos) && isFinite(r.pos)) { pos.push(r); }
-          if (!isNaN(r.neg) && isFinite(r.neg)) { neg.push(r); }
-          if (!isNaN(r.both) && isFinite(r.both)) { both.push(r); }
-          if (!isNaN(r.pend) && isFinite(r.pend)) { pend.push(r); }
-          if (!isNaN(r.hosp) && isFinite(r.hosp)) { hosp.push(r); }
-          if (!isNaN(r.died) && isFinite(r.died)) { died.push(r); }
-          if (!isNaN(r.tot) && isFinite(r.tot)) { tot.push(r); }
+          if (!isNaN(r.pos) && isFinite(r.pos)) { pos.push(Object.assign({}, r)); }
+          if (!isNaN(r.neg) && isFinite(r.neg)) { neg.push(Object.assign({}, r)); }
+          if (!isNaN(r.both) && isFinite(r.both)) { both.push(Object.assign({}, r)); }
+          if (!isNaN(r.pend) && isFinite(r.pend)) { pend.push(Object.assign({}, r)); }
+          if (!isNaN(r.hosp) && isFinite(r.hosp)) { hosp.push(Object.assign({}, r)); }
+          if (!isNaN(r.died) && isFinite(r.died)) { died.push(Object.assign({}, r)); }
+          if (!isNaN(r.tot) && isFinite(r.tot)) { tot.push(Object.assign({}, r)); }
         });
         spc.displayChart(pos, "#posContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "pos"});
         spc.displayChart(neg, "#negContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "neg"});
