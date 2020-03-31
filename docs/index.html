@@ -32,10 +32,14 @@
       <div id="spcLegend"></div>
     </div>
   <div id="spcContainer">
-    <h2>Hospitalized Patients</h2>
+    <h2>Case Details</h2>
+    <h3>Total Cases (Positive Tests)</h3>
+    <div id="caseContainer"></div>
+
+    <h3>Hospitalized Patients</h3>
     <div id="hospContainer"></div>
 
-    <h2>Deaths</h2>
+    <h3>Deaths</h3>
     <div id="diedContainer"></div>
 
     <h2>Testing Detail</h2>
@@ -45,6 +49,8 @@
     <h3>Negative Tests</h3>
     <div id="negContainer"></div>
 
+    <h3>Positive / Negative Ratio</h3>
+    <div id="ratioContainer"></div>
     <h3>Total Results</h3>
     <div id="bothContainer"></div>
 
@@ -56,7 +62,7 @@
   </div>
 
   <script type="text/javascript">
-  var pos = [], neg = [], both = [], pend = [], hosp = [], died = [], tot = [];
+  var pos = [], neg = [], both = [], pend = [], hosp = [], died = [], tot = [], ratio = [];
   function loadData(myData, label) {
 
     d3.csv(myData, function(error, d) {
@@ -69,6 +75,7 @@
           r.Date = spc.parseTime("%Y%m%d")(d.date);
           r.pos = 1.0 / (1.0 - (+d.positiveIncrease / +d.positive));
           r.neg = 1.0 / (1.0 - (+d.negativeIncrease / +d.negative));
+          r.ratio = +d.positiveIncreate / +d.negativeIncrease;
           r.both = 1.0 / (1.0 - ((+d.positiveIncrease + +d.negativeIncrease) / +d.posNeg));
           r.pend = 1.0 / (1.0 - ((+d.totalTestResultsIncrease - +d.positiveIncrease + +d.negativeIncrease) / +d.pending));
           r.hosp = 1.0 / (1.0 - (+d.hospitalizedIncrease / +d.hospitalized));
@@ -76,19 +83,22 @@
           r.tot = 1.0 / (1.0 - (+d.totalTestResultsIncrease / +d.total));
           if (!isNaN(r.pos) && isFinite(r.pos)) { pos.push(Object.assign({}, r)); }
           if (!isNaN(r.neg) && isFinite(r.neg)) { neg.push(Object.assign({}, r)); }
+          if (!isNaN(r.ratio) && isFinite(r.ratio)) { neg.push(Object.assign({}, r)); }
           if (!isNaN(r.both) && isFinite(r.both)) { both.push(Object.assign({}, r)); }
           if (!isNaN(r.pend) && isFinite(r.pend)) { pend.push(Object.assign({}, r)); }
           if (!isNaN(r.hosp) && isFinite(r.hosp)) { hosp.push(Object.assign({}, r)); }
           if (!isNaN(r.died) && isFinite(r.died)) { died.push(Object.assign({}, r)); }
           if (!isNaN(r.tot) && isFinite(r.tot)) { tot.push(Object.assign({}, r)); }
         });
-        spc.displayChart(pos, "#posContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "pos"});
-        spc.displayChart(neg, "#negContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "neg"});
-        spc.displayChart(both, "#bothContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "both"});
-        spc.displayChart(pend, "#pendContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "pend"});
-        spc.displayChart(hosp, "#hospContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "hosp"});
-        spc.displayChart(died, "#diedContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "died"});
-        spc.displayChart(tot, "#totContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "tot"});
+        spc.displayChart(pos, "#posContainer", posProperties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "pos"});
+        spc.displayChart(pos, "#caseContainer", posProperties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "pos"});
+        spc.displayChart(neg, "#negContainer", negProperties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "neg"});
+        spc.displayChart(neg, "#ratioContainer", ratioProperties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "ratio"});
+        spc.displayChart(both, "#bothContainer", bothProperties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "both"});
+        spc.displayChart(pend, "#pendContainer", pendProperties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "pend"});
+        spc.displayChart(hosp, "#hospContainer", hospProperties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "hosp"});
+        spc.displayChart(died, "#diedContainer", diedProperties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "died"});
+        spc.displayChart(tot, "#totContainer", totProperties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "tot"});
       });
   }
 
@@ -105,23 +115,27 @@
 
   toggleAutoDetect = function () {
     properties.autoDetectProcess = !properties.autoDetectProcess;
-    spc.displayChart(pos, "#posContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "pos"});
-    spc.displayChart(neg, "#negContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "neg"});
-    spc.displayChart(both, "#bothContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "both"});
-    spc.displayChart(pend, "#pendContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "pend"});
-    spc.displayChart(hosp, "#hospContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "hosp"});
-    spc.displayChart(died, "#diedContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "died"});
-    spc.displayChart(tot, "#totContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "tot"});
+    spc.displayChart(pos, "#posContainer", posProperties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "pos"});
+    spc.displayChart(pos, "#caseContainer", posProperties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "pos"});
+    spc.displayChart(neg, "#negContainer", negProperties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "neg"});
+    spc.displayChart(neg, "#ratioContainer", ratioProperties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "ratio"});
+    spc.displayChart(both, "#bothContainer", bothProperties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "both"});
+    spc.displayChart(pend, "#pendContainer", pendProperties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "pend"});
+    spc.displayChart(hosp, "#hospContainer", hospProperties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "hosp"});
+    spc.displayChart(died, "#diedContainer", diedProperties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "died"});
+    spc.displayChart(tot, "#totContainer", totProperties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "tot"});
   }
 
   window.onresize = function() {
-      spc.displayChart("#posContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "pos"});
-      spc.displayChart("#negContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "neg"});
-      spc.displayChart("#bothContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "both"});
-      spc.displayChart("#pendContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "pend"});
-      spc.displayChart("#hospContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "hosp"});
-      spc.displayChart("#diedContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "died"});
-      spc.displayChart("#totContainer", properties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "tot"});
+	    spc.resizeChart("#posContainer", posProperties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "pos"});
+        spc.resizeChart("#caseContainer", posProperties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "pos"});
+	    spc.resizeChart("#negContainer", negProperties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "neg"});
+	    spc.resizeChart("#ratioContainer", ratioProperties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "ratio"});
+	    spc.resizeChart("#bothContainer", bothProperties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "both"});
+	    spc.resizeChart("#pendContainer", pendProperties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "pend"});
+	    spc.resizeChart("#hospContainer", hospProperties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "hosp"});
+	    spc.resizeChart("#diedContainer", diedProperties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "died"});
+	    spc.resizeChart("#totContainer", totProperties = {"autoDetectProcess" : autoDetectProcesses, "yData" : "tot"});
   }
   </script>
 </body>
