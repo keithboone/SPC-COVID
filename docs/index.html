@@ -75,15 +75,6 @@
 			</div>
 			<div class="leftItem" id="myLabel">US COVID-19 1/(1 -
 				New/Total)</div>
-			<div class="leftItem">Click on a data point to exclude it from
-				statistical analysis. Click anywhere in the chart to create a manual
-				process break, or click below to automatically detect them. Disable
-				manual process breaks by clicking on the circle at the top of the
-				break.</div>
-			<div class="leftItem">
-				<input class="button" type="button" onclick="toggleAutoDetect()"
-					value="Toggle Process Break Detection">
-			</div>
 		</div>
 		<div id="spcLegend"></div>
 	</div>
@@ -121,7 +112,7 @@
   var pos = [], neg = [], both = [], pend = [], hosp = [], died = [], tot = [], ratio = [];
   function loadData(myData, label) {
 	d3.csv(myData, function(error, d) {
-
+		pos = [], neg = [], both = [], pend = [], hosp = [], died = [], tot = [], ratio = [];
         if (error) throw error;
 
         data = d;
